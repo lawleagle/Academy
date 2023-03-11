@@ -14,6 +14,7 @@ struct MemoryGame<CardContent> where CardContent : Equatable
         var isMatched : Bool = false
         var seen : Bool = false
         var content : CardContent
+        var firstSeen : Date?
         
         var id : Int
     }
@@ -21,7 +22,7 @@ struct MemoryGame<CardContent> where CardContent : Equatable
     
     var cards : [Card]
     var indexOfVisibleCard : Int?
-    var score = 0
+    var score = 0.0
 
     mutating func choose(_ card : Card) {
         if let chosenIndex = cards.firstIndex(where: { $0.id == card.id }),
@@ -32,16 +33,18 @@ struct MemoryGame<CardContent> where CardContent : Equatable
                 if cards[chosenIndex].content == cards[matchIndex].content {
                     cards[chosenIndex].isMatched = true
                     cards[matchIndex].isMatched = true
+                    
+                    if let date = cards[matchIndex].firstSeen {
+                        score += 10.0 - DateInterval(start: date, end: Date()).duration
+                    } else {
+                        score += 10.0
+                    }
+                    if let date = cards[chosenIndex].firstSeen {
+                        score += 10.0 - DateInterval(start: date, end: Date()).duration
+                    } else {
+                        score += 10.0
+                    }
                     score += 2
-                } else {
-                    if cards[chosenIndex].seen {
-                        score -= 1
-                    }
-                    cards[chosenIndex].seen = true
-                    if cards[matchIndex].seen {
-                        score -= 1
-                    }
-                    cards[matchIndex].seen = true
                 }
                 indexOfVisibleCard = nil
             } else {
@@ -50,7 +53,10 @@ struct MemoryGame<CardContent> where CardContent : Equatable
                 }
                 indexOfVisibleCard = chosenIndex
             }
-            cards[chosenIndex].isFaceUp.toggle()
+            cards[chosenIndex].isFaceUp = true
+            if cards[chosenIndex].firstSeen == nil {
+                cards[chosenIndex].firstSeen = Date()
+            }
         }
     }
     

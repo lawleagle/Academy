@@ -13,51 +13,24 @@ struct Theme
     var emojis : Array<String>
     var noPairs : Int
     var color : Color
+    var gradient : Gradient?
+    
+    init(name : String, emojis : Array<String>, noPairs : Int = -1, color: Color, randomiseNoPairs : Bool = false, gradient : Gradient? = nil) {
+        self.name = name
+        self.emojis = emojis
+        if noPairs == -1 {
+            if randomiseNoPairs == true {
+                self.noPairs = Int.random(in: 2...emojis.count)
+            } else {
+                self.noPairs = emojis.count
+            }
+        } else {
+            self.noPairs = noPairs
+        }
+        self.color = color
+        self.gradient = gradient
+    }
 }
-var themes = [
-    Theme(
-        name: "vehicles",
-        emojis: ["✈️", "🚗", "🚀", "🚅", "🚌", "🏎", "🚜", "🛵", "🚲", "🛴", "🦽", "🏍",
-                "🛸", "🚁", "🛶", "🚤", "🛰", "🛟", "🛺", "🩼", "🚑", "🚚", "🛻", "🚓"],
-        noPairs: 100,
-        color: .blue
-    ),
-    Theme(
-        name: "animals",
-        emojis: ["🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼", "🐻‍❄️", "🐨", "🐯", "🦁",
-                "🐮", "🐷", "🐸", "🐵", "🐔", "🐧", "🦆", "🦅", "🦉", "🦇", "🐺", "🦄"],
-        noPairs: 8,
-        color: .red
-    ),
-    Theme(
-        name: "alphabet",
-        emojis: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
-                "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"],
-        noPairs: 6,
-        color: .green
-    ),
-    Theme(
-        name: "vehicles2",
-        emojis: ["✈️", "🚗", "🚀", "🚅", "🚌", "🏎", "🚜", "🛵", "🚲", "🛴", "🦽", "🏍",
-                "🛸", "🚁", "🛶", "🚤", "🛰", "🛟", "🛺", "🩼", "🚑", "🚚", "🛻", "🚓"],
-        noPairs: 100,
-        color: .red
-    ),
-    Theme(
-        name: "animals2",
-        emojis: ["🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼", "🐻‍❄️", "🐨", "🐯", "🦁",
-                "🐮", "🐷", "🐸", "🐵", "🐔", "🐧", "🦆", "🦅", "🦉", "🦇", "🐺", "🦄"],
-        noPairs: 8,
-        color: .green
-    ),
-    Theme(
-        name: "alphabet2",
-        emojis: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
-                "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"],
-        noPairs: 6,
-        color: .blue
-    ),
-]
 
 class EmojiMemoryGame : ObservableObject
 {
@@ -74,7 +47,7 @@ class EmojiMemoryGame : ObservableObject
         return game.cards
     }
     
-    var score : Int
+    var score : Double
     {
         return game.score
     }
@@ -86,6 +59,53 @@ class EmojiMemoryGame : ObservableObject
     }
     
     func newGame() {
+        let themes = [
+            Theme(
+                name: "vehicles",
+                emojis: ["✈️", "🚗", "🚀", "🚅", "🚌", "🏎", "🚜", "🛵", "🚲", "🛴", "🦽", "🏍",
+                        "🛸", "🚁", "🛶", "🚤", "🛰", "🛟", "🛺", "🩼", "🚑", "🚚", "🛻", "🚓"],
+                color: .blue,
+                randomiseNoPairs: true
+            ),
+            Theme(
+                name: "animals",
+                emojis: ["🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼", "🐻‍❄️", "🐨", "🐯", "🦁",
+                        "🐮", "🐷", "🐸", "🐵", "🐔", "🐧", "🦆", "🦅", "🦉", "🦇", "🐺", "🦄"],
+                noPairs: 8,
+                color: .red
+            ),
+            Theme(
+                name: "alphabet",
+                emojis: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
+                        "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"],
+                noPairs: 6,
+                color: .green
+            ),
+            Theme(
+                name: "vehicles2",
+                emojis: ["✈️", "🚗", "🚀", "🚅", "🚌", "🏎", "🚜", "🛵", "🚲", "🛴", "🦽", "🏍",
+                        "🛸", "🚁", "🛶", "🚤", "🛰", "🛟", "🛺", "🩼", "🚑", "🚚", "🛻", "🚓"],
+                noPairs: 100,
+                color: .red
+            ),
+            Theme(
+                name: "animals2",
+                emojis: ["🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼", "🐻‍❄️", "🐨", "🐯", "🦁",
+                        "🐮", "🐷", "🐸", "🐵", "🐔", "🐧", "🦆", "🦅", "🦉", "🦇", "🐺", "🦄"],
+                noPairs: 8,
+                color: .green
+            ),
+            Theme(
+                name: "alphabet2",
+                emojis: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
+                        "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"],
+                noPairs: 6,
+                color: .red,
+                gradient: Gradient(colors: [.red, .blue])
+            ),
+        ]
+
+        
         let themeNo = Int.random(in: 0..<6)
         theme = themes[themeNo]
         theme.noPairs = min(theme.noPairs, 12)

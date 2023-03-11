@@ -3,6 +3,7 @@ import SwiftUI
 
 struct Card : View {
     var card : MemoryGame<String>.Card
+    var theme : Theme
     
     var body : some View {
         ZStack {
@@ -14,7 +15,11 @@ struct Card : View {
             } else if card.isMatched {
                 shape.opacity(0)
             } else {
-                shape.fill()
+                if let gradient = theme.gradient {
+                    shape.fill(gradient)
+                } else {
+                    shape.fill()
+                }
             }
         }
     }
@@ -35,7 +40,7 @@ struct Memorize : View {
             ScrollView {
                 LazyVGrid(columns: [noSpacingGridItem()], spacing:0) {
                     ForEach(game.cards) { card in
-                        Card(card: card)
+                        Card(card: card, theme: game.theme)
                             .padding(4)
                             .aspectRatio(2/3, contentMode: .fit)
                             .onTapGesture {
