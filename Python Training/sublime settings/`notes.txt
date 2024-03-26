@@ -1,0 +1,9 @@
+
+- used to solve programming challenges that require reading from stdin in Sublime Text
+- build system will read input from file and pass it to the stdin of program
+
+- to add build system, copy <name>.sublime-build file to: (<user> needs replacing)
+C:\\Users\\<user>\\AppData\\Roaming\\Sublime Text\\Packages\\User
+
+- select build system:
+Tools -> Build System -> <name>
